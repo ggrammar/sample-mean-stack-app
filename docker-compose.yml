@@ -1,0 +1,32 @@
+version: '3'
+services:
+
+  mongo:
+    image: mongo:7.0.1-jammy
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ggordon
+      MONGO_INITDB_ROOT_PASSWORD: ggordon
+    ports:
+      - 27017:27017
+    # Here, we provide an alias that other containers can use to reach mongodb. You can see
+    # in the .env file how "mongo" is used as a DNS entry.
+    networks:
+      app-network:
+        aliases:
+        - mongo
+
+  app:
+    build: .
+    # How does Docker know when the mongo container has actually started?
+    depends_on:
+      - mongo
+    ports:
+      - 5200:5200 
+    networks:
+      - app-network
+
+# Our containers need to talk to eachother, so we need to create a network to allow this. 
+networks:
+  app-network:
+    name: app-network
+    driver: bridge

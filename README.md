@@ -24,19 +24,11 @@ npm install --save-dev typescript @types/cors @types/express @types/node ts-node
 
 # Run
 
-```
-# Our containers need to talk to each other, create a network to allow this. 
-docker network create some-network
+`docker-compose up`
 
-# Run MongoDB container in the background (--detach) and set default username/password. 
-docker run -p 27017:27017 --network some-network --detach -e MONGO_INITDB_ROOT_USERNAME=ggordon -e MONGO_INITDB_ROOT_PASSWORD=ggordon mongo:7.0.1-jammy
+Networking and some configuration is handled by Docker Compose - see docker-compose.yml for more information.
 
-# Run Node.js containter in the background with a specific launch command. 
-# I'm using an LTS version of Node.js here, but maybe the tutorial uses a different version? Need to check this.
-# npx is a separate binary, but it's basically shorthand for npm --exec, "run a command from a local or remote npm package"
-# Why is ts-node installed as a development dependency, if we're using it to run the server?
-docker run -p 5200:5200   --network some-network -w /home/node -it -v $(pwd):/home/node node:lts-alpine3.17 npx ts-node src/server.ts
-```
+TODO: How do I retrieve the IP address of this container, and put it into the .env file?
 
 # Misc Notes
 
@@ -51,7 +43,7 @@ docker run -p 5200:5200   --network some-network -w /home/node -it -v $(pwd):/ho
 looks like 7.0 is likely to have support through August 2026? still TBD though
 
 I think I'll need to write a docker-compose file or something to connect my Node.js docker container and my MongoDB docker container. 
-added --network some-network to all docker run commands
+added --network app-network to all docker run commands
 MONGO_INITDB_ROOT_USERNAME and MONGO_INITDB_ROOT_PASSWORD set, .env ATLAS_URI updated to point to "admin" database, able to connect
 able to connect to localhost:5200, which means that node connection to mongo is working! very cool!
 ```
